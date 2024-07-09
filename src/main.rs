@@ -89,6 +89,7 @@ fn main() {
     let mut merkle_root: Vec<u8> = Vec::new();
     if args.len() == 3 {
         merkle_root = hex::decode(&args[2]).unwrap();
+        print!("merkle_root={:?}\n",merkle_root);
     }
 
     let secp = Secp256k1::new();

@@ -9,7 +9,6 @@ use bitcoin::hashes::HashEngine;
 use bitcoin::network::constants::Network;
 use bitcoin::schnorr::PublicKey;
 use bitcoin::secp256k1::rand::rngs::OsRng;
-use bitcoin::secp256k1::Secp256k1;
 use bitcoin::util::address::Address;
 use bitcoin::util::ecdsa::PrivateKey;
 use bitcoin::util::taproot::TapTweakHash;
@@ -76,7 +75,7 @@ fn main() {
     //print_rng_gen();
 
     let mut rng = OsRng::new().unwrap();
-    let     args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().collect();
     let mut prefix: String = "bc1p000".to_string();
 
     if args.len() == 2 {
@@ -115,10 +114,8 @@ fn main() {
         return;
     }
 
-    use bitcoin::secp256k1::{Secp256k1, SecretKey};
-
     let secp = bitcoin::secp256k1::Secp256k1::new();
-    use secp256k1::Keypair;
+
     use std::str::FromStr;
     #[allow(unused_variables)]
     let secret_key = secp256k1::SecretKey::from_str(

@@ -16,6 +16,7 @@ use bitcoin::util::taproot::TapTweakHash;
 
 use std::env;
 
+#[allow(dead_code)]
 fn print_random_char() {
     if bitcoin::secp256k1::rand::random() {
         // generates a boolean
@@ -41,6 +42,7 @@ fn print_random_char() {
     std::process::exit(0);
 }
 
+#[allow(dead_code)]
 fn print_rng_gen() {
     let mut rng = OsRng::new().unwrap();
 
@@ -74,7 +76,7 @@ fn main() {
     //print_rng_gen();
 
     let mut rng = OsRng::new().unwrap();
-    let mut args: Vec<String> = env::args().collect();
+    let     args: Vec<String> = env::args().collect();
     let mut prefix: String = "bc1p000".to_string();
 
     if args.len() == 2 {
@@ -92,7 +94,11 @@ fn main() {
 
     const CHARSET: &str = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
     let prefix_split: Vec<&str> = prefix.split("1").collect();
+    for pc in prefix_split[0].chars() {
+        //print!("{}\n", pc);
+    }
     for pc in prefix_split[1].chars() {
+        //print!("{}\n", pc);
         if !CHARSET.contains(pc) {
             println!("Invalid character in prefix.\nUse:\n{}", CHARSET);
             return;
@@ -114,6 +120,7 @@ fn main() {
     let secp = bitcoin::secp256k1::Secp256k1::new();
     use secp256k1::Keypair;
     use std::str::FromStr;
+    #[allow(unused_variables)]
     let secret_key = secp256k1::SecretKey::from_str(
         "0000000000000000000000000000000000000000000000000000000000000001",
     )
@@ -122,19 +129,19 @@ fn main() {
 
     loop {
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);
-        print!("internal_seckey={:?}\n", internal_seckey);
-        print!("internal_pubkey={:?}\n", internal_pubkey);
+        //print!("internal_seckey={:?}\n", internal_seckey);
+        //print!("internal_pubkey={:?}\n", internal_pubkey);
 
         let mut tweak: Vec<u8> = Vec::new();
-        print!("tweak={:?}\n", tweak);
+        //print!("tweak={:?}\n", tweak);
         tweak.extend_from_slice(&internal_pubkey.serialize());
-        print!("tweak.extend_from_slice={:?}\n", tweak);
+        //print!("tweak.extend_from_slice={:?}\n", tweak);
         tweak.extend_from_slice(&merkle_root);
-        print!("tweak.extend_from_slice={:?}\n", tweak);
+        //print!("tweak.extend_from_slice={:?}\n", tweak);
         let mut engine = TapTweakHash::engine();
         engine.input(&tweak);
         let tweak_value: [u8; 32] = TapTweakHash::from_engine(engine).into_inner();
-        print!("tweak.value={:?}\n", tweak_value);
+        //print!("tweak.value={:?}\n", tweak_value);
 
         let mut output_seckey = internal_seckey.clone();
         output_seckey.tweak_add_assign(&secp, &tweak_value).unwrap();

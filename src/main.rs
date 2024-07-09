@@ -100,11 +100,12 @@ fn main() {
     match String::from_str(&format!("{:}", secret_key.display_secret())) {
         Ok(s) => {
             for c in s.chars() {
-                println!("{}", c);
+                print!("{}", c);
             }
         }
         Err(_) => println!("Invalid UTF-8 sequence"),
     }
+    print!("\n");
 
     use bip39::Language;
     use bip39::Mnemonic;

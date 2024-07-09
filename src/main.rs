@@ -44,7 +44,7 @@ fn main() {
     let y: f64 = rng.gen(); // generates a float between 0 and 1
     print!("y={:?}\n", &y);
 
-    let mut key = [0u8; 16];
+    let mut key = [1u8; 16];
     rng.try_fill_bytes(&mut key).unwrap();
 
     let c: f64 = rng.gen(); // generates a float between 0 and 1
@@ -53,8 +53,11 @@ fn main() {
     let d = rng.next_u64();
     print!("d={:?}\n", &d);
 
-    let mut nums: Vec<i32> = (1..100).collect();
+    let mut nums: Vec<i32> = (0..255).collect();
+    print!("nums={:?}\n", &nums);
     nums.shuffle(&mut rng);
+    print!("nums={:?}\n", &nums);
+    //std::process::exit(0);
 
 
 //
@@ -96,13 +99,19 @@ fn main() {
 
     loop {
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);
+        print!("internal_seckey={:?}\n",internal_seckey);
+        print!("internal_pubkey={:?}\n",internal_pubkey);
 
         let mut tweak: Vec<u8> = Vec::new();
+        print!("tweak={:?}\n",tweak);
         tweak.extend_from_slice(&internal_pubkey.serialize());
+        print!("tweak.extend_from_slice={:?}\n",tweak);
         tweak.extend_from_slice(&merkle_root);
+        print!("tweak.extend_from_slice={:?}\n",tweak);
         let mut engine = TapTweakHash::engine();
         engine.input(&tweak);
         let tweak_value: [u8; 32] = TapTweakHash::from_engine(engine).into_inner();
+        print!("tweak.value={:?}\n",tweak_value);
 
         let mut output_seckey = internal_seckey.clone();
         output_seckey.tweak_add_assign(&secp, &tweak_value).unwrap();

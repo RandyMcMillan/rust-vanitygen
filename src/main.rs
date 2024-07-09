@@ -16,7 +16,7 @@ use bitcoin::util::taproot::TapTweakHash;
 
 use std::env;
 
-fn main() {
+fn print_random_char() {
     if bitcoin::secp256k1::rand::random() {
         // generates a boolean
         print!(
@@ -38,6 +38,10 @@ fn main() {
         );
     }
 
+    std::process::exit(0);
+}
+
+fn print_rng_gen() {
     let mut rng = OsRng::new().unwrap();
 
     //print!("\n\n\n   rng={:?}   \n\n\n",&rng);
@@ -57,18 +61,24 @@ fn main() {
     print!("nums={:?}\n", &nums);
     nums.shuffle(&mut rng);
     print!("nums={:?}\n", &nums);
-    //std::process::exit(0);
 
-
-//
     let mut b_rng = bitcoin::secp256k1::rand::thread_rng();
     let b: f64 = b_rng.gen(); // generates a float between 0 and 1
     print!("b={:?}\n", &b);
 
+    print_random_char();
+    std::process::exit(0);
+}
+
+fn main() {
+    //print_rng_gen();
+
+    let mut rng = OsRng::new().unwrap();
     let mut args: Vec<String> = env::args().collect();
     let mut prefix: String = "bc1p000".to_string();
 
     if args.len() == 2 {
+        //rust-vanitygen BC1P000
         prefix = args[1].to_lowercase();
     }
     if prefix.len() <= 4 {
@@ -92,32 +102,39 @@ fn main() {
     let mut merkle_root: Vec<u8> = Vec::new();
     if args.len() == 3 {
         merkle_root = hex::decode(&args[2]).unwrap();
-        print!("merkle_root={:?}\n",merkle_root);
+        print!("merkle_root={:?}\n", merkle_root);
+    }
+    if args.len() >= 4 {
+        println!("try:\nrust-vanity-gen bc1p000");
+        return;
     }
 
     use bitcoin::secp256k1::{Secp256k1, SecretKey};
 
     let secp = bitcoin::secp256k1::Secp256k1::new();
-    use std::str::FromStr;
     use secp256k1::Keypair;
-    let secret_key = secp256k1::SecretKey::from_str("0000000000000000000000000000000000000000000000000000000000000001").unwrap();
+    use std::str::FromStr;
+    let secret_key = secp256k1::SecretKey::from_str(
+        "0000000000000000000000000000000000000000000000000000000000000001",
+    )
+    .unwrap();
     //let key = Keypair::from_secret_key(&secp, &key_0);
 
     loop {
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);
-        print!("internal_seckey={:?}\n",internal_seckey);
-        print!("internal_pubkey={:?}\n",internal_pubkey);
+        print!("internal_seckey={:?}\n", internal_seckey);
+        print!("internal_pubkey={:?}\n", internal_pubkey);
 
         let mut tweak: Vec<u8> = Vec::new();
-        print!("tweak={:?}\n",tweak);
+        print!("tweak={:?}\n", tweak);
         tweak.extend_from_slice(&internal_pubkey.serialize());
-        print!("tweak.extend_from_slice={:?}\n",tweak);
+        print!("tweak.extend_from_slice={:?}\n", tweak);
         tweak.extend_from_slice(&merkle_root);
-        print!("tweak.extend_from_slice={:?}\n",tweak);
+        print!("tweak.extend_from_slice={:?}\n", tweak);
         let mut engine = TapTweakHash::engine();
         engine.input(&tweak);
         let tweak_value: [u8; 32] = TapTweakHash::from_engine(engine).into_inner();
-        print!("tweak.value={:?}\n",tweak_value);
+        print!("tweak.value={:?}\n", tweak_value);
 
         let mut output_seckey = internal_seckey.clone();
         output_seckey.tweak_add_assign(&secp, &tweak_value).unwrap();

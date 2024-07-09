@@ -114,7 +114,17 @@ fn main() {
         return;
     }
 
-    let secp = bitcoin::secp256k1::Secp256k1::new();
+    //let secp = bitcoin::secp256k1::Secp256k1::new();
+    let secp = secp256k1::Secp256k1::new();
+
+    let four: u64 = "4".parse().unwrap();
+    assert_eq!(4, four);
+    print!("four={:?}\n", four);
+    let one: u64 = "0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
+    assert_eq!(1, one);
+    print!("one={:?}\n", one);
+    //#[allow(unreachable_code)]
+    //std::process::exit(0);
 
     use std::str::FromStr;
     #[allow(unused_variables)]
@@ -122,12 +132,30 @@ fn main() {
         "0000000000000000000000000000000000000000000000000000000000000001",
     )
     .unwrap();
-    //let key = Keypair::from_secret_key(&secp, &key_0);
+    print!("secret_key.display_secret()={:}\n", secret_key.display_secret());
+    print!("secret_key.secret_bytes()={:?}\n", secret_key.secret_bytes());
+    print!("secret_key={:?}\n", secret_key);
+    let public_key = secp256k1::PublicKey::from_secret_key(&secp, &secret_key);
+    print!("public_key={:?}\n", public_key);
 
+    #[allow(unreachable_code)]
+    std::process::exit(0);
+
+    let secp = bitcoin::secp256k1::Secp256k1::new();
+    let count = 0;
     loop {
+
+
+    let mut merkle_root: Vec<u8> = Vec::new();
+
+
+
+
+
+
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);
-        //print!("internal_seckey={:?}\n", internal_seckey);
-        //print!("internal_pubkey={:?}\n", internal_pubkey);
+        print!("internal_seckey={:?}\n", internal_seckey);
+        print!("internal_pubkey={:?}\n", internal_pubkey);
 
         let mut tweak: Vec<u8> = Vec::new();
         //print!("tweak={:?}\n", tweak);

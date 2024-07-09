@@ -144,8 +144,8 @@ fn main() {
     );
     print!("secret_key={:?}\n", secret_key);
     let public_key = secp256k1::PublicKey::from_secret_key(&secp, &secret_key);
-    print!("public_key={:?}\n", public_key);
-    print!("x_only_public_key={:?}\n", public_key.x_only_public_key());
+    print!("       public_key=\n      {:?}\n", public_key);
+    print!("x_only_public_key=\n{:?}\n", public_key.x_only_public_key());
 
     use secp256k1::{Keypair, Scalar, Secp256k1, XOnlyPublicKey};
 
@@ -157,7 +157,7 @@ fn main() {
     let tweaked = xonly
         .add_tweak(&secp, &tweak)
         .expect("Improbable to fail with a randomly generated tweak");
-    print!("x_only_public_key tweaked={:?}\n", tweaked);
+    print!("          tweaked=\n{:?}\n", tweaked);
 
     #[allow(unreachable_code)]
     std::process::exit(0);

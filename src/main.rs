@@ -93,8 +93,8 @@ fn main() {
 
     const CHARSET: &str = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
     let prefix_split: Vec<&str> = prefix.split("1").collect();
-    for pc in prefix_split[0].chars() {
-        //print!("{}\n", pc);
+    for _pc in prefix_split[0].chars() {
+        //print!("{}\n", _pc);
     }
     for pc in prefix_split[1].chars() {
         //print!("{}\n", pc);

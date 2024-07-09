@@ -120,7 +120,9 @@ fn main() {
     let four: u64 = "4".parse().unwrap();
     assert_eq!(4, four);
     print!("four={:?}\n", four);
-    let one: u64 = "0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
+    let one: u64 = "0000000000000000000000000000000000000000000000000000000000000001"
+        .parse()
+        .unwrap();
     assert_eq!(1, one);
     print!("one={:?}\n", one);
     //#[allow(unreachable_code)]
@@ -132,11 +134,30 @@ fn main() {
         "0000000000000000000000000000000000000000000000000000000000000001",
     )
     .unwrap();
-    print!("secret_key.display_secret()={:}\n", secret_key.display_secret());
-    print!("secret_key.secret_bytes()={:?}\n", secret_key.secret_bytes());
+    print!(
+        "secret_key.display_secret()={:}\n",
+        secret_key.display_secret()
+    );
+    print!(
+        "secret_key.secret_bytes()={:?}\n",
+        secret_key.secret_bytes()
+    );
     print!("secret_key={:?}\n", secret_key);
     let public_key = secp256k1::PublicKey::from_secret_key(&secp, &secret_key);
     print!("public_key={:?}\n", public_key);
+    print!("x_only_public_key={:?}\n", public_key.x_only_public_key());
+
+    use secp256k1::{Keypair, Scalar, Secp256k1, XOnlyPublicKey};
+
+    let tweak = Scalar::random();
+
+    let original = public_key;
+
+    let (xonly, _parity) = public_key.x_only_public_key();
+    let tweaked = xonly
+        .add_tweak(&secp, &tweak)
+        .expect("Improbable to fail with a randomly generated tweak");
+    print!("x_only_public_key tweaked={:?}\n", tweaked);
 
     #[allow(unreachable_code)]
     std::process::exit(0);
@@ -144,14 +165,7 @@ fn main() {
     let secp = bitcoin::secp256k1::Secp256k1::new();
     let count = 0;
     loop {
-
-
-    let mut merkle_root: Vec<u8> = Vec::new();
-
-
-
-
-
+        let mut merkle_root: Vec<u8> = Vec::new();
 
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);
         print!("internal_seckey={:?}\n", internal_seckey);

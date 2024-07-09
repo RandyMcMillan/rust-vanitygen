@@ -7,6 +7,7 @@ edition = "2021"
 [dependencies]
 bitcoin = { git = "https://github.com/rust-bitcoin/rust-bitcoin", features = ["rand", "use-serde"] }
 hex = "0.4"
+secp256k1 = "0.29.0"
 
 [patch.crates-io]
 secp256k1 = { git = "https://github.com/rust-bitcoin/rust-secp256k1" }

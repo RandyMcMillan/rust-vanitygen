@@ -95,7 +95,13 @@ fn main() {
         print!("merkle_root={:?}\n",merkle_root);
     }
 
-    let secp = Secp256k1::new();
+    use bitcoin::secp256k1::{Secp256k1, SecretKey};
+
+    let secp = bitcoin::secp256k1::Secp256k1::new();
+    use std::str::FromStr;
+    use secp256k1::Keypair;
+    let secret_key = secp256k1::SecretKey::from_str("0000000000000000000000000000000000000000000000000000000000000001").unwrap();
+    //let key = Keypair::from_secret_key(&secp, &key_0);
 
     loop {
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);

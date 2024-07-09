@@ -1,5 +1,7 @@
 extern crate bitcoin;
 
+use crate::bitcoin::secp256k1::rand::RngCore;
+
 use bitcoin::hashes::Hash;
 use bitcoin::hashes::HashEngine;
 use bitcoin::network::constants::Network;
@@ -14,15 +16,47 @@ use std::env;
 
 fn main() {
 
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 || args.len() > 3 {
-        println!("Invalid number of args");
-        return;
-    }
+use crate::bitcoin::secp256k1::rand::Rng;
+use crate::bitcoin::secp256k1::rand::prelude::SliceRandom;
 
-    let prefix = args[1].to_lowercase();
-    if prefix.len() <= 4 {
-        println!("Prefix is too short");
+if bitcoin::secp256k1::rand::random() { // generates a boolean
+    print!("char: {:}\n", bitcoin::secp256k1::rand::random::<char>());
+    print!("char: {:?}\n", bitcoin::secp256k1::rand::random::<char>());
+} else {
+    print!("char: {:}\n", bitcoin::secp256k1::rand::random::<char>());
+    print!("char: {:?}\n", bitcoin::secp256k1::rand::random::<char>());
+}
+
+let mut rng = OsRng::new().unwrap();
+//print!("\n\n\n   rng={:?}   \n\n\n",&rng);
+let mut b_rng = bitcoin::secp256k1::rand::thread_rng();
+let b: f64 = b_rng.gen(); // generates a float between 0 and 1
+print!("b={:?}\n",&b);
+let y: f64 = rng.gen(); // generates a float between 0 and 1
+print!("y={:?}\n",&y);
+let mut key = [0u8; 16];
+let c = Some(rng.try_fill_bytes(&mut key).unwrap());
+print!("c={:?}\n",&c);
+//let d = Some(rng.try_fill_bytes(&mut y).unwrap());
+//print!("d={:?}\n",&d);
+//bitcoin::secp256k1::rand::prelude::ThreadRng::try_fill_bytes(&mut key).unwrap();
+//let random_u64 = rng.next_u64().unwrap();
+//    let mut rng = OsRng::new().unwrap();
+  //  print!("\n\n\n   rng={:?}   \n\n\n",&rng);
+
+
+let mut nums: Vec<i32> = (1..100).collect();
+nums.shuffle(&mut rng);
+
+
+    let mut args: Vec<String> = env::args().collect();
+    let mut prefix: String = "bc1p000".to_string();
+
+    if args.len() == 2 {
+        prefix = args[1].to_lowercase();
+    }
+    if args.len() >= 3 || prefix.len() <= 4 {
+        println!("try:\nrust-vanity-gen bc1p000");
         return;
     }
     if prefix.get(0..4) != Some("bc1p") {
@@ -47,6 +81,7 @@ fn main() {
     let secp = Secp256k1::new();
 
     let mut rng = OsRng::new().unwrap();
+    print!("\n\n\n   rng={:?}   \n\n\n",&rng);
 
     loop {
         let (internal_seckey, internal_pubkey) = secp.generate_schnorrsig_keypair(&mut rng);

@@ -78,6 +78,49 @@ fn main() {
     print_rng_gen();
 
     let mut rng = OsRng::new().unwrap();
+
+    use std::str::FromStr;
+    #[allow(unused_variables)]
+    let secret_key = secp256k1::SecretKey::from_str(
+        "0000000000000000000000000000000000000000000000000000000000000001",
+    )
+    .unwrap();
+    //#[cfg(debug_assertions)]
+    print!(
+        //"secret_key.display_secret()={:}\n",
+        "{:}\n",
+        secret_key.display_secret()
+    );
+
+    let bytes = vec![
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 1,
+    ];
+    match String::from_str(&format!("{:}", secret_key.display_secret())) {
+        Ok(s) => {
+            for c in s.chars() {
+                println!("{}", c);
+            }
+        }
+        Err(_) => println!("Invalid UTF-8 sequence"),
+    }
+
+    use bip39::Language;
+    use bip39::Mnemonic;
+
+    //let m = Mnemonic::generate_in_with(&mut rng, Language::English, 24).unwrap();
+    //for (i, word) in m.word_iter().enumerate() {
+    //    print!("{} ", word);
+    //}
+    //print!("\n");
+
+    let m = Mnemonic::from_entropy(&[0; 32]).unwrap();
+    for (i, word) in m.word_iter().enumerate() {
+        print!("{} ", word);
+    }
+    print!("\n");
+
     let args: Vec<String> = env::args().collect();
     let mut prefix: String = "bc1p000".to_string();
 
@@ -148,7 +191,7 @@ fn main() {
     //#[allow(unreachable_code)]
     //std::process::exit(0);
 
-    use std::str::FromStr;
+    //use std::str::FromStr;
     #[allow(unused_variables)]
     let secret_key = secp256k1::SecretKey::from_str(
         "0000000000000000000000000000000000000000000000000000000000000001",

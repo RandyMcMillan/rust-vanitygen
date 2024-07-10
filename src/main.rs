@@ -91,12 +91,6 @@ fn main() {
         "{:}\n",
         secret_key.display_secret()
     );
-
-    let bytes = vec![
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 1,
-    ];
     match String::from_str(&format!("{:}", secret_key.display_secret())) {
         Ok(s) => {
             for c in s.chars() {
@@ -116,9 +110,47 @@ fn main() {
     //}
     //print!("\n");
 
+    // REF: https://docs.rs/bip39/latest/bip39/struct.Mnemonic.html
+    // Create a new English Mnemonic from the given entropy.
+    // Entropy must be a multiple of 32 bits (32/8 = 4 bytes) and 128-256 bits in length.
+
+    //           count: 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+    let count_12 = vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let m = Mnemonic::from_entropy(&count_12).unwrap();
+    print!("count_12: (1)\n");
+    for (i, word) in m.word_iter().enumerate() {
+        print!("count={}:{} ", i, word);
+    }
+    print!("\n");
+
+    print!("count_12: (2)\n");
+    let m = Mnemonic::from_entropy(&[0; 16]).unwrap();
+    for (i, word) in m.word_iter().enumerate() {
+        print!("count={}:{} ", i, word);
+    }
+    print!("\n");
+
+    //           count: 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+    let count_20 = vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    let m = Mnemonic::from_entropy(&count_20).unwrap();
+    print!("bytes_15:\n");
+    for (i, word) in m.word_iter().enumerate() {
+        print!("count={}:{} ", i, word);
+    }
+    print!("\n");
+
+    print!("count_24:\n");
     let m = Mnemonic::from_entropy(&[0; 32]).unwrap();
     for (i, word) in m.word_iter().enumerate() {
-        print!("{} ", word);
+        print!("count={}:{} ", i, word);
+    }
+    print!("\n");
+
+    print!("count_24:\n");
+    let m = Mnemonic::from_entropy(&[0; 32]).unwrap();
+    for (i, word) in m.word_iter().enumerate() {
+        print!("count={}:{} ", i, word);
     }
     print!("\n");
 
